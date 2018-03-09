@@ -1,6 +1,6 @@
-from board import *
+from board import board
 from pomocni import boardDiff
 
-def vracanje(b):
+def peaceReset(b):
     ## diodeALL()
-
+    pass
