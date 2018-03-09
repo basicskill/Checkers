@@ -14,39 +14,38 @@ b.printBoard()
 
 while b.gameWon == -1:
     
-    bStanje, wStanje = getState(b)
-    try:
-        wMove = boardDiff(b, bStanje, wStanje, 'r')
-        b.moveWhite(*wMove)
-    except Exception as err:
-        ## jedna razlika
+    print('*********PLAYER*********')
+    bState, wState = getState(b)
+    wMove, difference = boardDiff(b, bState, wState, 'r')
+    
+    if difference == 0:
         sleep(t)
         continue
-    except Exception as err:
-        ## vise od jedne greske
+    elif difference > 2:
         peaceReset(b)
         continue
-    
-    b1 = minMax(b)[0]
 
-    print('*********KOMP*********')
-    b = b1
+    print(wMove)
+    try:
+        b.moveWhite(*wMove)
+    except Exception as err:
+        print("###################################33")
+        pass # !!!!!!1
+
+    print('*********COMPUTER*********')
+    b = minMax(b)
+    print(len(b))
+    b = b[0]
     b.printBoard()
-    bStanje, wStanje = getState(b)
-    bMove = boardDiff(b, bStanje, wStanje, 'b')
-    
-    while len(bMove != 0):
 
-        if len(bMove) == 2:
-            ## jedna razlika
-            ## cekaj
-            sleep(t)
-            ## neki while
-        else:
-            pass
-    
-    
-
+    while difference != 0:
+        bState, wState = getState(b)
+        bMove, difference = boardDiff(b, bState, wState, 'b')
+        if difference > 2:
+            peaceReset(b)
+            continue
+        print('Cekam!')
+        sleep(t)
 
     if b.gameWon == b.WHITE:
         print("White\nGame Over")

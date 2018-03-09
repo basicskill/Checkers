@@ -1,5 +1,5 @@
 from board import board
-from pomocni import boardDiff
+from from_camera import boardDiff
 
 def peaceReset(b):
     ## diodeALL()

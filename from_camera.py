@@ -11,16 +11,13 @@ def boardDiff(b, blist, wlist, boja):
     bmove = list(set(b.blacklist) - set(blist)) + list(set(blist) - set(b.blacklist))
     wmove = list(set(b.whitelist) - set(wlist)) + list(set(wlist) - set(b.whitelist))
 
-    if (len(bmove) == 2 and 
-        len(wmove) == 0) or (len(wmove) == 2 and len(bmove) == 0):
+    diffNum = len(wmove)+len(bmove)
+
+    if  diffNum <= 2:
         if boja == 'b':
-            return bmove[0], bmove[1], b.NOTDONE
+            return (bmove[0], bmove[1], b.NOTDONE), diffNum
         else:
-            return wmove[0], wmove[1], b.NOTDONE
-    if len(bmove) + len(wmove) == 0:
-        raise Exception("Nepomereno!")
-    if len(bmove) + len(wmove) == 2:
-        raise Exception("1 razlika")
+            return (wmove[0], wmove[1], b.NOTDONE), diffNum
     raise Exception("Invalid move!")
 
 def getState(b):
