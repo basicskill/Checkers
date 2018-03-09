@@ -1,24 +1,28 @@
 from board import board
 from subprocess import Popen, PIPE
-from constants import DIM, DEBUG
+from constants import DIM
 
-def boardDiff(b, blist, wlist, boja):
+def boardDiff(b, blist, wlist):
     """
-        Vraca promenu crnih ili crvenih figura.
-        Ako je pomereno vise figura vraca gresku.
+        Returns number of different peace placements on the board
     """
 
-    bmove = list(set(b.blacklist) - set(blist)) + list(set(blist) - set(b.blacklist))
-    wmove = list(set(b.whitelist) - set(wlist)) + list(set(wlist) - set(b.whitelist))
+    bDiff = list(set(b.blacklist) - set(blist)) + list(set(blist) - set(b.blacklist))
+    wDiff = list(set(b.whitelist) - set(wlist)) + list(set(wlist) - set(b.whitelist))
 
-    diffNum = len(wmove)+len(bmove)
+    return len(wDiff) + len(bDiff)
 
-    if  diffNum <= 2:
-        if boja == 'b':
-            return (bmove[0], bmove[1], b.NOTDONE), diffNum
-        else:
-            return (wmove[0], wmove[1], b.NOTDONE), diffNum
-    raise Exception("Invalid move!")
+def getPlayerMove(b, bList, wList):
+    wMove = list(set(b.whitelist) - set(wList)) + list(set(wList) - set(b.whitelist))
+    if abs(wMove[0][0] - wMove[1][0] == 2) and abs(wMove[0][1] - wMove[1][1] == 2):
+        return wMove[0], wMove[1], b.BLACK
+    return wMove[1], wMove[1], b.NOTDONE
+
+def getPlayerMoveInverse(b, bList, wList):
+    wMove = list(set(b.whitelist) - set(wList)) + list(set(wList) - set(b.whitelist))
+    if abs(wMove[0][0] - wMove[1][0] == 2) and abs(wMove[0][1] - wMove[1][1] == 2):
+        return wMove[1], wMove[0], b.BLACK
+    return wMove[1], wMove[0], b.NOTDONE
 
 def getState(b):
     """

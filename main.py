@@ -1,6 +1,6 @@
 from board import board
 from minmax import minMax2 as minMax
-from from_camera import boardDiff, getState
+from from_camera import boardDiff, getState, getPlayerMove, getPlayerMoveInverse
 from to_arduino import peaceReset
 from time import sleep
 from constants import DIM, firstPlayer, t
@@ -16,31 +16,39 @@ while b.gameWon == -1:
     
     print('*********PLAYER*********')
     bState, wState = getState(b)
-    wMove, difference = boardDiff(b, bState, wState, 'r')
-    
+    difference = boardDiff(b, bState, wState)
+
     if difference == 0:
         sleep(t)
         continue
     elif difference > 2:
         peaceReset(b)
         continue
-
-    print(wMove)
+    
+    
+    wMove = getPlayerMove(b, bState, wState)
     try:
         b.moveWhite(*wMove)
     except Exception as err:
-        print("###################################33")
-        pass # !!!!!!1
+        print(err)
+        wMove = getPlayerMoveInverse(b, bState, wState)
+        try:
+            b.moveWhite(*wMove)
+            b.printBoard()
+        except Exception:
+            peaceReset(b)
+        finally:
+            pass
+    finally:
+        pass
 
     print('*********COMPUTER*********')
-    b = minMax(b)
-    print(len(b))
-    b = b[0]
+    b = minMax(b)[0]
     b.printBoard()
 
     while difference != 0:
         bState, wState = getState(b)
-        bMove, difference = boardDiff(b, bState, wState, 'b')
+        difference = boardDiff(b, bState, wState)
         if difference > 2:
             peaceReset(b)
             continue
