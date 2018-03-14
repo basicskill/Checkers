@@ -3,6 +3,15 @@ from subprocess import Popen, PIPE
 from constants import DIM, tPotez
 from time import sleep
 from pygame.image import save as sejv
+from collections import Counter
+
+def pomocni_print(geter):
+    st = ''
+    for figura in geter:
+        st += figura
+        if len(st) == 6:
+            print(st)
+            st = ''
 
 def getImage(kamera):
     kamera.start()
@@ -47,20 +56,35 @@ def getState(b, kamera):
     wlist = []
 
     getImage(kamera)
-    getImage(kamera)
-    getImage(kamera)
-    getImage(kamera)
-    geter = Popen(["./output"], stdout=PIPE).communicate()[0].lower().split()
-    if geter == -1:
-        sleep(tPotez)
-        return getState(b, kamera)
-    geter = [x.decode("utf-8") for x in geter]
+    binCL = []
+    bwvL = []
+    redSL = []
+    redVL = []
+    for thrash in listaTresholda: 
+        for bwv in bwvL:
+            for redS in redSL:
+                for redV in redVL:
+                    geter = Popen(["./output {}".format(thrash)], stdout=PIPE).communicate()[0].lower().split()
+                    geter = [x.decode("utf-8") for x in geter]
+                    if geter == ['-1']:
+                        print('Neispravna detekcija!')
+                        sleep(tPotez)
+                        return getState(b, kamera)
+                    kaunter = Counter(geter)
+                    if not((kaunter['b'] == 6) and (kaunter['r'] == 6) and (kaunter['w'] == 24)):
+                        print('Los broj figura!')
+                        pomocni_print(geter)
+                        sleep(tPotez)
+                        return getState(b, kamera)
+                    pomocni_print(geter)
+
+
     for char in range(0, len(geter)):
         if geter[char] == 'w':
             continue
         y = char // DIM
         x = char % DIM                
-        if geter[char] == 'c':
+        if geter[char] == 'b':
             blist.append((x, y))
         if geter[char] == 'r':
             wlist.append((x, y))

@@ -5,6 +5,7 @@ from to_arduino import peaceReset, turnLED
 from time import sleep
 from constants import DIM, firstPlayer, t
 import pygame.camera as cam
+import serial
 
 b = board(DIM, DIM, firstPlayer)
 
@@ -12,12 +13,14 @@ b.printBoard()
 
 def spremiKameru(): 
     cam.init()
-    kamera = cam.Camera(cam.list_cameras()[0])
+    kamera = cam.Camera(cam.list_cameras()[1])
     return kamera
 
+kamera = spremiKameru()
+#ser = serial.Serial('/dev/ttyUSB0', 9600)
+### MAIN PROGRAM ###
+ser = ''
 while b.gameWon == -1:
-
-    kamera = spremiKameru()
 
     print('*********PLAYER*********')
     bState, wState = getState(b, kamera)
@@ -28,7 +31,7 @@ while b.gameWon == -1:
         print('CEKAM')
         continue
     elif difference > 2:
-        peaceReset(b)
+        #peaceReset(ser, b, kamera)
         continue
     
     
@@ -42,7 +45,7 @@ while b.gameWon == -1:
             b.moveWhite(*wMove)
             b.printBoard()
         except Exception:
-            peaceReset(b)
+            peaceReset(ser, b, kamera)
         finally:
             pass
     finally:
@@ -55,12 +58,13 @@ while b.gameWon == -1:
     difference = boardDiff(b, bState, wState)
     
     computerMove = getComputerMove(b, bState)
-    turnLED(computerMove, [])
+    #turnLED(ser, computerMove, [])
 
 
     while difference != 0:
         if difference > 2:
-            peaceReset(b)
+            print('KURAC')
+            #peaceReset(ser, b)
             continue
         print('Cekam!')
         sleep(t)
