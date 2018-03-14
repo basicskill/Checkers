@@ -180,18 +180,18 @@ void odredi_stanje(Mat image, vector<vector<char> >& stanje)
 
 int main()
 {
+	/*
 	VideoCapture cap;
 	if (!cap.open(0))
-		return 0; ////////////////////////////
+		return -1; 
 
 
 	Mat frame;
 	cap >> frame;
-
+	*/
 	vector<vector<char> > stanje(6, vector<char> (6));
 
-	frame = imread("tabla.png", CV_LOAD_IMAGE_COLOR); ////
-
+	Mat frame = imread("tabla.png", CV_LOAD_IMAGE_COLOR); ////
 	odredi_stanje(frame, stanje);
 
 	

@@ -2,7 +2,13 @@ from board import board
 from subprocess import Popen, PIPE
 from constants import DIM, tPotez
 from time import sleep
+from pygame.image import save as sejv
 
+def getImage(kamera):
+    kamera.start()
+    img = kamera.get_image()
+    sejv(img, "tabla.png")
+    kamera.stop()
 
 def boardDiff(b, blist, wlist):
     """
@@ -28,11 +34,11 @@ def getPlayerMoveInverse(b, wList):
 
 def getComputerMove(b, bList):
     bMove = list(set(b.blacklist) - set(bList)) + list(set(bList) - set(b.blacklist))
-    if abs(bMove[0][0] - bMove[1][0] == 2) and abs(bMove[0][1] - bMove[1][1] == 2):
-        return bMove[0], bMove[1], b.BLACK
-    return bMove[0], bMove[1], b.NOTDONE
+    #if abs(bMove[0][0] - bMove[1][0] == 2) and abs(bMove[0][1] - bMove[1][1] == 2):
+    #    return bMove[0], bMove[1], b.BLACK
+    return bMove[0], bMove[1]
 
-def getState(b):
+def getState(b, kamera):
     """
         Vraca listu crnih pa crvenih figura
     """    
@@ -40,10 +46,14 @@ def getState(b):
     blist = []
     wlist = []
 
+    getImage(kamera)
+    getImage(kamera)
+    getImage(kamera)
+    getImage(kamera)
     geter = Popen(["./output"], stdout=PIPE).communicate()[0].lower().split()
-    if geter == ['-1']:
+    if geter == -1:
         sleep(tPotez)
-        return getState(b)
+        return getState(b, kamera)
     geter = [x.decode("utf-8") for x in geter]
     for char in range(0, len(geter)):
         if geter[char] == 'w':

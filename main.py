@@ -1,23 +1,31 @@
 from board import board
 from minmax import minMax2 as minMax
-from from_camera import boardDiff, getState, getPlayerMove, getPlayerMoveInverse
+from from_camera import boardDiff, getState, getPlayerMove, getPlayerMoveInverse, getComputerMove
 from to_arduino import peaceReset, turnLED
 from time import sleep
 from constants import DIM, firstPlayer, t
+import pygame.camera as cam
 
 b = board(DIM, DIM, firstPlayer)
 
 b.printBoard()
 
+def spremiKameru(): 
+    cam.init()
+    kamera = cam.Camera(cam.list_cameras()[0])
+    return kamera
 
 while b.gameWon == -1:
-    
+
+    kamera = spremiKameru()
+
     print('*********PLAYER*********')
-    bState, wState = getState(b)
+    bState, wState = getState(b, kamera)
     difference = boardDiff(b, bState, wState)
 
     if difference == 0:
         sleep(t)
+        print('CEKAM')
         continue
     elif difference > 2:
         peaceReset(b)
@@ -43,10 +51,11 @@ while b.gameWon == -1:
     print('*********COMPUTER*********')
     b = minMax(b)[0]
     b.printBoard()
-    bState, wState = getState(b)
+    bState, wState = getState(b, kamera)
     difference = boardDiff(b, bState, wState)
     
-    turnLED()
+    computerMove = getComputerMove(b, bState)
+    turnLED(computerMove, [])
 
 
     while difference != 0:
