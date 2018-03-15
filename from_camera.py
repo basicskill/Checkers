@@ -4,6 +4,7 @@ from constants import DIM, tPotez
 from time import sleep
 from pygame.image import save as sejv
 from collections import Counter
+import os
 
 def pomocni_print(geter):
     st = ''
@@ -16,7 +17,7 @@ def pomocni_print(geter):
 def getImage(kamera):
     kamera.start()
     img = kamera.get_image()
-    sejv(img, "tabla.png")
+    sejv(img, "tabla.jpg")
     kamera.stop()
 
 def boardDiff(b, blist, wlist):
@@ -46,39 +47,9 @@ def getComputerMove(b, bList):
     #if abs(bMove[0][0] - bMove[1][0] == 2) and abs(bMove[0][1] - bMove[1][1] == 2):
     #    return bMove[0], bMove[1], b.BLACK
     return bMove[0], bMove[1]
-
-def getState(b, kamera):
-    """
-        Vraca listu crnih pa crvenih figura
-    """    
-
+def parsuj(geter):
     blist = []
     wlist = []
-
-    getImage(kamera)
-    binCL = []
-    bwvL = []
-    redSL = []
-    redVL = []
-    for thrash in listaTresholda: 
-        for bwv in bwvL:
-            for redS in redSL:
-                for redV in redVL:
-                    geter = Popen(["./output {}".format(thrash)], stdout=PIPE).communicate()[0].lower().split()
-                    geter = [x.decode("utf-8") for x in geter]
-                    if geter == ['-1']:
-                        print('Neispravna detekcija!')
-                        sleep(tPotez)
-                        return getState(b, kamera)
-                    kaunter = Counter(geter)
-                    if not((kaunter['b'] == 6) and (kaunter['r'] == 6) and (kaunter['w'] == 24)):
-                        print('Los broj figura!')
-                        pomocni_print(geter)
-                        sleep(tPotez)
-                        return getState(b, kamera)
-                    pomocni_print(geter)
-
-
     for char in range(0, len(geter)):
         if geter[char] == 'w':
             continue
@@ -88,7 +59,47 @@ def getState(b, kamera):
             blist.append((x, y))
         if geter[char] == 'r':
             wlist.append((x, y))
-
     return blist, wlist
+
+def getState(b, kamera):
+    """
+        Vraca listu crnih pa crvenih figura
+    """    
+
+    getImage(kamera)    
+    
+    # PARAMETRI:
+    binDL = ['11', '21', '31']
+    binCL = ['10', '20', '30']
+    wvL = ['150', '175', '200']
+    wsL = ['80', '100', '120', '150']
+    bvL = ['80', '100', '120', '150']
+    
+    #for binD in binDL: 
+    #    for binC in binCL:
+    #        for wv in wvL:
+    #            for ws in wsL:
+    #                for bv in bvL:
+    #komanda = './output' + ' ' + binD + ' ' + binC + ' ' + wv + ' ' + ws + ' ' + bv
+    komanda = './output 11 100 150 120 100'
+    geter = os.popen(komanda).read()
+    #print(geter)
+    if geter == '-1':
+        print('Neispravna detekcija!' + komanda)
+        return getState(b, kamera)
+        #continue
+    kaunter = Counter(geter)
+    if not((kaunter['b'] == 6) and (kaunter['r'] == 6) and (kaunter['w'] == 24)):
+        print('Los broj figura!' + komanda)
+        pomocni_print(geter)
+        return getState(b, kamera)
+        #continue
+    print('FOTOGRAFISANO!')
+    geter1 = [x for x in reversed(geter)]
+    #pomocni_print(geter)
+    #print(b.blacklist)
+    #print(b.whitelist)
+    return parsuj(geter1)
+
 
 

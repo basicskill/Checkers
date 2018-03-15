@@ -9,7 +9,6 @@ import serial
 
 b = board(DIM, DIM, firstPlayer)
 
-b.printBoard()
 
 def spremiKameru(): 
     cam.init()
@@ -17,21 +16,25 @@ def spremiKameru():
     return kamera
 
 kamera = spremiKameru()
-#ser = serial.Serial('/dev/ttyUSB0', 9600)
+ser = serial.Serial('/dev/ttyUSB0', 9600)
+ser.write(b'k')
+
 ### MAIN PROGRAM ###
-ser = ''
 while b.gameWon == -1:
 
     print('*********PLAYER*********')
+    b.printBoard()
     bState, wState = getState(b, kamera)
     difference = boardDiff(b, bState, wState)
 
-    if difference == 0:
-        sleep(t)
+    while difference == 0:
         print('CEKAM')
+        sleep(t)
+        bState, wState = getState(b, kamera)
+        difference = boardDiff(b, bState, wState)
         continue
-    elif difference > 2:
-        #peaceReset(ser, b, kamera)
+    if difference > 2:
+        peaceReset(ser, b)
         continue
     
     
@@ -45,7 +48,7 @@ while b.gameWon == -1:
             b.moveWhite(*wMove)
             b.printBoard()
         except Exception:
-            peaceReset(ser, b, kamera)
+            peaceReset(ser, b)
         finally:
             pass
     finally:
@@ -54,22 +57,21 @@ while b.gameWon == -1:
     print('*********COMPUTER*********')
     b = minMax(b)[0]
     b.printBoard()
-    bState, wState = getState(b, kamera)
-    difference = boardDiff(b, bState, wState)
-    
-    computerMove = getComputerMove(b, bState)
-    #turnLED(ser, computerMove, [])
 
-
+    difference = 2
     while difference != 0:
+        bState, wState = getState(b, kamera)
+        difference = boardDiff(b, bState, wState)
+        if difference == 2:
+            computerMove = getComputerMove(b, bState)
+            turnLED(ser, computerMove, [])
         if difference > 2:
-            print('KURAC')
-            #peaceReset(ser, b)
-            continue
+            peaceReset(ser, b)
         print('Cekam!')
-        sleep(t)
 
     if b.gameWon == b.WHITE:
+        ser.write(b'q')
         print("White\nGame Over")
     if b.gameWon == b.BLACK:
+        ser.write(b'w')
         print("Black\nGame Over")
