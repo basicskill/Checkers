@@ -5,6 +5,13 @@ from constants import tPotez
 from from_camera import getState
 import serial
 
+## Uputstvo:
+#   k - iskljuci sve
+#   q - sve crvene
+#   w - sve bele
+#   brojb - svetli beli
+#   brojc - svetli crveno
+
 def peaceReset(ser, b): 
     print('RESET!')
     for _ in range(0, 1):
@@ -31,11 +38,6 @@ def turnLED(ser, bPolja, wPolja):
     for polje in reversed(Polja):
         print(polje)
         sleep(2)
-
-        if polje[0] // 2 == 1:
-            ljepo = polje[1]# + 1
-        else:
-            ljepo = polje[1] #+ 1
         dioda = str(polje[1]) + str(5 - polje[0]) + c
         signal = bytes(dioda, 'utf-8')
         print(signal)

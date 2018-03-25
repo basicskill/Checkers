@@ -44,9 +44,8 @@ def getPlayerMoveInverse(b, wList):
 
 def getComputerMove(b, bList):
     bMove = list(set(b.blacklist) - set(bList)) + list(set(bList) - set(b.blacklist))
-    #if abs(bMove[0][0] - bMove[1][0] == 2) and abs(bMove[0][1] - bMove[1][1] == 2):
-    #    return bMove[0], bMove[1], b.BLACK
     return bMove[0], bMove[1]
+
 def parsuj(geter):
     blist = []
     wlist = []

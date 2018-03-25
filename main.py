@@ -1,3 +1,5 @@
+## SETUP: g++ main.cpp -o output `pkg-config --cflags --libs opencv`
+
 from board import board
 from minmax import minMax2 as minMax
 from from_camera import boardDiff, getState, getPlayerMove, getPlayerMoveInverse, getComputerMove
@@ -10,12 +12,12 @@ import serial
 b = board(DIM, DIM, firstPlayer)
 
 
-def spremiKameru(): 
+def readyCamera(): 
     cam.init()
     kamera = cam.Camera(cam.list_cameras()[1])
     return kamera
 
-kamera = spremiKameru()
+kamera = readyCamera()
 ser = serial.Serial('/dev/ttyUSB0', 9600)
 ser.write(b'k')
 
