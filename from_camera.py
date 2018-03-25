@@ -68,37 +68,20 @@ def getState(b, kamera):
 
     getImage(kamera)    
     
-    # PARAMETRI:
-    binDL = ['11', '21', '31']
-    binCL = ['10', '20', '30']
-    wvL = ['150', '175', '200']
-    wsL = ['80', '100', '120', '150']
-    bvL = ['80', '100', '120', '150']
-    
-    #for binD in binDL: 
-    #    for binC in binCL:
-    #        for wv in wvL:
-    #            for ws in wsL:
-    #                for bv in bvL:
-    #komanda = './output' + ' ' + binD + ' ' + binC + ' ' + wv + ' ' + ws + ' ' + bv
-    komanda = './output 11 100 150 120 100'
+    komanda = './output 21 50 120 80 90'
     geter = os.popen(komanda).read()
-    #print(geter)
     if geter == '-1':
         print('Neispravna detekcija!' + komanda)
         return getState(b, kamera)
-        #continue
     kaunter = Counter(geter)
     if not((kaunter['b'] == 6) and (kaunter['r'] == 6) and (kaunter['w'] == 24)):
         print('Los broj figura!' + komanda)
         pomocni_print(geter)
         return getState(b, kamera)
-        #continue
+    
     print('FOTOGRAFISANO!')
     geter1 = [x for x in reversed(geter)]
-    #pomocni_print(geter)
-    #print(b.blacklist)
-    #print(b.whitelist)
+    
     return parsuj(geter1)
 
 

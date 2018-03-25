@@ -42,8 +42,4 @@ def turnLED(ser, bPolja, wPolja):
         ser.write(signal)
         sleep(2)
         ser.write(b'k')
-        #if polje[1] // 2 == 0:
-        #    signal = str(polje[1]) + str((polje[0]+1) // 2)  + 'b'
-        #else:
-        #    signal = str(polje[1]) + str((polje[0]) // 2) + 'b'
-        #ser.write(signal)
+

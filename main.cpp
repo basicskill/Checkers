@@ -27,8 +27,24 @@ void odredi_stanje(Mat image, vector<vector<char> >& stanje, int bind, int binc,
 
 	Mat b_image;
 	adaptiveThreshold(g_image, b_image, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, bind, binc);
-	imwrite("bin.jpg", b_image);
 	
+	
+	int dim2 = 5, dim3 = 3;
+	Mat kernel2(dim2, dim2, DataType<int>::type);
+	for (int i = 0; i < dim2; i++)
+		for (int j = 0; j < dim2; j++) kernel2.at<int>(i, j) = 1;
+	Mat kernel3(dim3, dim3, DataType<int>::type);
+	for (int i = 0; i < dim3; i++)
+		for (int j = 0; j < dim3; j++) kernel3.at<int>(i, j) = 1;
+
+
+	erode(b_image, b_image, kernel2);
+	//dilate(b_image, b_image, kernel3);
+	//dilate(b_image, b_image, kernel2);
+	//dilate(b_image, b_image, kernel2);
+	
+
+	imwrite("bin.jpg", b_image);
 
 	Mat filled_image = b_image.clone();
 	floodFill(filled_image, Point(0, 0), Scalar(0));
